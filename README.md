@@ -168,6 +168,8 @@ Simply put, this downloads the file as a temp file, we load it in with `TextFile
 
 Why do we want to support streaming? What about streaming is important, or useful?
 
+- Streaming is the ability to deliver the output per token that is processed, instead of waiting for all tokens to be processed. This is desireable primarily because it enhances the user experience by increasing perceived latency and providing response(s) closer to the speed at which humans can read.
+
 ### On Chat Start:
 
 The next scope is where "the magic happens". On Chat Start is when a user begins a chat session. This will happen whenever a user opens a new chat window, or refreshes an existing chat window.
@@ -209,6 +211,8 @@ Now, we'll save that into our user session!
 #### ❓ QUESTION #2: 
 
 Why are we using User Session here? What about Python makes us need to use this? Why not just store everything in a global variable?
+
+- We are using user session to in order to manage user-specific data. Things such as conversation history need to be kept separate per user-session in order for the application to function as expected. User session ensures that one user's data does not interfere with another. In Python, you can't really use global state management for multi-threaded apps, because of Python's concurrency model and Global Interpreter Lock. User sessions in a python based LLM chat app would prevent issues race conditions and data pollution across threads.
 
 ### On Message
 
@@ -330,10 +334,17 @@ Try uploading a text file and asking some questions!
 Upload a PDF file of the recent DeepSeek-R1 paper and ask the following questions:
 
 1. What is RL and how does it help reasoning?
+- Response: Reinforcement Learning (RL) is a type of machine learning where an agent learns to make decisions by taking actions in an environment to maximize some notion of cumulative reward. In the context provided, RL helps improve reasoning capabilities by allowing the model to explore chain-of-thought (CoT) for solving complex problems. This exploration leads to the development of reasoning behaviors such as self-verification, reflection, and generating long CoTs, which enhances the model's performance in reasoning tasks without relying on supervised fine-tuning (SFT). By incentivizing the model through RL, it can evolve its reasoning abilities autonomously, demonstrating significant improvements in reasoning benchmarks.
+
 2. What is the difference between DeepSeek-R1 and DeepSeek-R1-Zero?
+- Response: The context provided does not explicitly describe the differences between DeepSeek-R1 and DeepSeek-R1-Zero. Therefore, I don't know the answer to that question.
 3. What is this paper about?
+- Response: I don't know the answer.
 
 Does this application pass your vibe check? Are there any immediate pitfalls you're noticing?
+
+- It doesn't really pass the vibe check. While it does answer the first question well, the second and third questions are dissappointing responses.
+You could argue that the second response is valid, but the paper provides enough context for the LLM to compare them. The third response is invalid, as it does not have the context for what "this paper" is, but it should be able to infer that I am talking about the DeepSeek paper. If I instead ask "What is DeepSeek_R1.pdf about?", it will be able to give me a nice summary.
 
 ## 🚧 CHALLENGE MODE 🚧
 
